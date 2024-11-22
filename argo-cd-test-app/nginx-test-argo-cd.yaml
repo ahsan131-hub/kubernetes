@@ -37,7 +37,8 @@ kind: Ingress
 metadata:
   name: nginx-ingress
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    # traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   rules:
     - host: nginx-test.ahsanjsdev.tech
