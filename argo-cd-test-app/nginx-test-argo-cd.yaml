@@ -52,7 +52,7 @@ spec:
                 name: nginx-test
                 port:
                   number: 80
-  tls:
-    - hosts:
-        - nginx-test.ahsanjsdev.tech
-      secretName: nginx-test-tls
+  # tls:
+  #   - hosts:
+  #       - nginx-test.ahsanjsdev.tech
+  #     secretName: nginx-test-tls
