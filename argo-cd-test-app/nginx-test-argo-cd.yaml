@@ -1,16 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-argo-test
+  name: nginx-test
+  namespace: nginx-argo-test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nginx-argo-test
+      app: nginx-test
   template:
     metadata:
       labels:
-        app: nginx-argo-test
+        app: nginx-test
     spec:
       containers:
         - name: nginx
@@ -21,38 +22,37 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-argo-test
+  name: nginx-test
+  namespace: nginx-argo-test
 spec:
   selector:
-    app: nginx-argo-test
+    app: nginx-test
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
   type: ClusterIP
-
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx-ingress
+  name: nginx-test-ingress
+  namespace: nginx-argo-test
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   rules:
     - host: nginx-test.ahsanjsdev.tech
       http:
         paths:
           - path: /
-            pathType: Exact
+            pathType: Prefix
             backend:
               service:
-                name: nginx-argo-test
+                name: nginx-test
                 port:
                   number: 80
-  # tls:
-  #   - hosts:
-  #       - ahsanjsdev.tech
-  #     # secretName: tls-ahsanjsdev-tech
-  #     secretName: nginx1
+  tls:
+    - hosts:
+        - nginx-test.ahsanjsdev.tech
+      secretName: nginx-test-tls
