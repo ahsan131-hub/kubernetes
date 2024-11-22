@@ -32,21 +32,21 @@ spec:
       port: 80
       targetPort: 80
   type: ClusterIP
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: nginx-argo-test-tls
-  namespace: nginx-argo-test
-spec:
-  secretName: nginx-argo-test-tls
-  issuerRef:
-    # name: acme-issuer
-    name: cloudflare-clusterissuer
-    kind: ClusterIssuer
+# ---
+# apiVersion: cert-manager.io/v1
+# kind: Certificate
+# metadata:
+#   name: nginx-argo-test-tls
+#   namespace: nginx-argo-test
+# spec:
+#   secretName: nginx-argo-test-tls
+#   issuerRef:
+#     # name: acme-issuer
+#     name: cloudflare-clusterissuer
+#     kind: ClusterIssuer
 
-  dnsNames:
-    - "nginx-test.ahsanjsdev.tech"
+#   dnsNames:
+#     - "nginx-test.ahsanjsdev.tech"
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -55,9 +55,10 @@ metadata:
   namespace: nginx-argo-test
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    cert-manager.io/cluster-issuer: cloudflare-clusterissuer
 spec:
   rules:
-    - host: nginx-test.ahsanjsdev.tech
+    - host: "nginx-test.ahsanjsdev.tech"
       http:
         paths:
           - path: /
@@ -70,4 +71,4 @@ spec:
   tls:
     - hosts:
         - nginx-test.ahsanjsdev.tech
-      secretName: nginx-argo-test-tls
+      secretName: nginx-argo-tls
