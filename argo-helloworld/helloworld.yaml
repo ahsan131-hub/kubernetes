@@ -56,8 +56,7 @@ spec:
                   number: 80
   tls:
     - certResolver: le
-      hosts:
-        - "helloworld.civilfleet.org"
+
 ---
 # apiVersion: networking.k8s.io/v1
 # kind: IngressRoute
