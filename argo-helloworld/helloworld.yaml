@@ -33,42 +33,48 @@ spec:
       targetPort: 80
   type: ClusterIP
 # ---
-# apiVersion: cert-manager.io/v1
-# kind: Certificate
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
 # metadata:
-#   name: nginx-argo-test-tls
-#   namespace: nginx-argo-test
+#   name: helloworld-ingress
+#   namespace: helloworld
+#   annotations:
+#     traefik.ingress.kubernetes.io/router.entrypoints: websecure
+#     # cert-manager.io/cluster-issuer: cloudflare-clusterissuer
 # spec:
-#   secretName: nginx-argo-test-tls
-#   issuerRef:
-#     # name: acme-issuer
-#     name: cloudflare-clusterissuer
-#     kind: ClusterIssuer
+#   rules:
+#     - host: "helloworld.civilfleet.org"
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: helloworld
+#                 port:
+#                   number: 80
+# tls:
+#   - hosts:
+#       - nginx-test.ahsanjsdev.tech
+#     secretName: nginx-argo-tls
 
-#   dnsNames:
-#     - "nginx-test.ahsanjsdev.tech"
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
-  name: helloworld-ingress
-  namespace: helloworld
+  name: helloworld
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    # cert-manager.io/cluster-issuer: cloudflare-clusterissuer
+    external-dns.alpha.kubernetes.io/target: microk8s-metal.civilfleet.org
+    kubernetes.io/ingress.class: traefik
 spec:
-  rules:
-    - host: "helloworld.civilfleet.org"
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: helloworld
-                port:
-                  number: 80
-  # tls:
-  #   - hosts:
-  #       - nginx-test.ahsanjsdev.tech
-  #     secretName: nginx-argo-tls
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`helloworld.civilfleet.org`)
+      kind: Rule
+      services:
+        - name: helloworld
+          port: 8080
+  tls:
+    certResolver: le
