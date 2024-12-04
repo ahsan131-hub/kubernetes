@@ -41,6 +41,8 @@ metadata:
   annotations:
     external-dns.alpha.kubernetes.io/target: microk8s-metal.civilfleet.org
     kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+
     # cert-manager.io/cluster-issuer: cloudflare-clusterissuer
 spec:
   rules:
