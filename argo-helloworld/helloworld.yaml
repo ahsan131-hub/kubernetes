@@ -41,7 +41,7 @@ metadata:
   annotations:
     external-dns.alpha.kubernetes.io/target: microk8s-metal.civilfleet.org
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.tls.certresolver: le
+    # traefik.ingress.kubernetes.io/router.tls.certresolver: le
 spec:
   rules:
     - host: "helloworld.civilfleet.org"
@@ -55,10 +55,9 @@ spec:
                 port:
                   number: 80
   tls:
-    - hosts:
+    - certResolver: le
+      hosts:
         - "helloworld.civilfleet.org"
-      secretName: helloworld-tls
-
 ---
 # apiVersion: networking.k8s.io/v1
 # kind: IngressRoute
