@@ -32,49 +32,48 @@ spec:
       port: 80
       targetPort: 80
   type: ClusterIP
-# ---
-# apiVersion: networking.k8s.io/v1
-# kind: Ingress
-# metadata:
-#   name: helloworld-ingress
-#   namespace: helloworld
-#   annotations:
-#     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-#     # cert-manager.io/cluster-issuer: cloudflare-clusterissuer
-# spec:
-#   rules:
-#     - host: "helloworld.civilfleet.org"
-#       http:
-#         paths:
-#           - path: /
-#             pathType: Prefix
-#             backend:
-#               service:
-#                 name: helloworld
-#                 port:
-#                   number: 80
-# tls:
-#   - hosts:
-#       - nginx-test.ahsanjsdev.tech
-#     secretName: nginx-argo-tls
-
 ---
 apiVersion: networking.k8s.io/v1
-kind: IngressRoute
+kind: Ingress
 metadata:
-  name: helloworld
+  name: helloworld-ingress
+  namespace: helloworld
   annotations:
     external-dns.alpha.kubernetes.io/target: microk8s-metal.civilfleet.org
     kubernetes.io/ingress.class: traefik
+    # cert-manager.io/cluster-issuer: cloudflare-clusterissuer
 spec:
-  entryPoints:
-    - web
-    - websecure
-  routes:
-    - match: Host(`helloworld.civilfleet.org`)
-      kind: Rule
-      services:
-        - name: helloworld
-          port: 8080
+  rules:
+    - host: "helloworld.civilfleet.org"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: helloworld
+                port:
+                  number: 80
   tls:
     certResolver: le
+
+---
+# apiVersion: networking.k8s.io/v1
+# kind: IngressRoute
+# metadata:
+#   name: helloworld
+#   annotations:
+#     external-dns.alpha.kubernetes.io/target: microk8s-metal.civilfleet.org
+#     kubernetes.io/ingress.class: traefik
+# spec:
+#   entryPoints:
+#     - web
+#     - websecure
+#   routes:
+#     - match: Host(`helloworld.civilfleet.org`)
+#       kind: Rule
+#       services:
+#         - name: helloworld
+#           port: 8080
+#   tls:
+#     certResolver: le
