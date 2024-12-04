@@ -33,47 +33,47 @@ spec:
       targetPort: 80
 
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: helloworld-ingress
-  namespace: helloworld
-  annotations:
-    external-dns.alpha.kubernetes.io/target: microk8s-metal.civilfleet.org
-    kubernetes.io/ingress.class: traefik
-    # traefik.ingress.kubernetes.io/router.tls.certresolver: le
-spec:
-  rules:
-    - host: "helloworld.civilfleet.org"
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: helloworld
-                port:
-                  number: 80
-  tls:
-    - certResolver: le
-
----
 # apiVersion: networking.k8s.io/v1
-# kind: IngressRoute
+# kind: Ingress
 # metadata:
-#   name: helloworld
+#   name: helloworld-ingress
+#   namespace: helloworld
 #   annotations:
 #     external-dns.alpha.kubernetes.io/target: microk8s-metal.civilfleet.org
 #     kubernetes.io/ingress.class: traefik
+#     # traefik.ingress.kubernetes.io/router.tls.certresolver: le
 # spec:
-#   entryPoints:
-#     - web
-#     - websecure
-#   routes:
-#     - match: Host(`helloworld.civilfleet.org`)
-#       kind: Rule
-#       services:
-#         - name: helloworld
-#           port: 8080
+#   rules:
+#     - host: "helloworld.civilfleet.org"
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: helloworld
+#                 port:
+#                   number: 80
 #   tls:
-#     certResolver: le
+#     - certResolver: le
+
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressRoute
+metadata:
+  name: helloworld
+  annotations:
+    external-dns.alpha.kubernetes.io/target: microk8s-metal.civilfleet.org
+    kubernetes.io/ingress.class: traefik
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`helloworld.civilfleet.org`)
+      kind: Rule
+      services:
+        - name: helloworld
+          port: 8080
+  tls:
+    certResolver: le
